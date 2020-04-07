@@ -2,6 +2,9 @@ from django.utils import timezone
 from django.db import models
 from django.db.models import F
 
+from taggit.managers import TaggableManager
+
+from common.utilities import get_upload_path
 from common.base_model import BaseModel
 
 
@@ -13,15 +16,29 @@ class WorkProfiles(BaseModel):
         max_length=255,
         null=False,
         blank=False, unique=True)
-    slug = models.SlugField(
-        max_length=255,
-        db_index=True, editable=False)
+    slug = models.SlugField(max_length=255, db_index=True, blank=True)
     name = models.CharField(
         max_length=255,
         null=False, blank=False)
     discription = models.TextField()
+
+    preview_image = models.FileField(
+        upload_to=(
+            lambda instance, file_name: get_upload_path(
+                instance,
+                file_name, "preview_image"
+            )
+        )
+    )
+
     project_files = models.FileField(
-        upload_to="work-profiles/project-files")
+        upload_to=(
+            lambda instance, file_name: get_upload_path(
+                instance,
+                file_name, "project-files"
+            )
+        )
+    )
 
     draft = models.BooleanField(default=True)
     published = models.BooleanField(default=False)
@@ -30,6 +47,8 @@ class WorkProfiles(BaseModel):
 
     view_count = models.IntegerField(default=0)
     likes_count = models.IntegerField(default=0)
+
+    tags = TaggableManager()
 
     class Meta:
         verbose_name_plural = "WorkProfiles"
@@ -45,6 +64,12 @@ class WorkProfiles(BaseModel):
         project file url
         """
         return self.project_files.storage.url(self.project_files.name)
+
+    def preview_image_url(self):
+        """
+        project file url
+        """
+        return self.preview_image.storage.url(self.preview_image.name)
 
     def publish(self):
         """
@@ -68,3 +93,23 @@ class WorkProfiles(BaseModel):
         """
         self.likes_count = F('likes_count') + 1
         self.save(update_fields=["likes_count"])
+
+
+class WorkProfileImages(models.Model):
+    """
+    Images for work profile
+    """
+    work_profile = models.ForeignKey(
+        WorkProfiles,
+        related_name="workprofiles",
+        on_delete=models.CASCADE)
+    alt = models.CharField(max_length=100, null=False, blank=False)
+    image = models.FileField(
+        upload_to=(
+            lambda instance, file_name: get_upload_path(
+                instance,
+                file_name, "images"
+            )
+        )
+    )
+    active = models.BooleanField(default=True)

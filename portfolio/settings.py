@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 import os
+from google.oauth2 import service_account
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -124,3 +125,24 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 TAGGIT_CASE_INSENSITIVE = True
+APPEND_SLASH = True
+
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME", "designer-portfolio")
+GS_PROJECT_ID = os.environ.get("GS_PROJECT_ID", "designer-portfolio-273514")
+GS_CREDENTIALS = (
+    service_account
+    .Credentials
+    .from_service_account_file(
+        os.path.join(
+            BASE_DIR,
+            "keys/designer-portfolio-273514-64ce5c413157.json"
+        )
+    )
+)
+GS_CUSTOM_ENDPOINT = f"https://storage.googleapis.com/{GS_BUCKET_NAME}"
+
+if not DEBUG:
+    STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+GS_DEFAULT_ACL = "publicRead"

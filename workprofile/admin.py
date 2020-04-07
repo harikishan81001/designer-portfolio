@@ -1,3 +1,52 @@
 from django.contrib import admin
 
-# Register your models here.
+from workprofile.models import WorkProfiles
+from workprofile.models import WorkProfileImages
+
+class WorkProfileImagesInline(admin.TabularInline):
+    model = WorkProfileImages
+    extra = 1
+
+
+class WorkProfilesAdmin(admin.ModelAdmin):
+    model = WorkProfiles
+    prepopulated_fields = {'slug': ('title',),}
+    list_display = (
+        "slug",
+        "title",
+        "name",
+        "draft",
+        "published",
+        "view_count",
+        "likes_count",
+        "tag_list"
+    )
+    search_fields = ("name", "title",)
+    list_filter = ("published", "draft", )
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                "title",
+                "name",
+                "discription",
+                "preview_image",
+                "project_files",
+                "draft",
+                "published",
+                'tags',
+                "slug",
+            )
+        }),
+    )
+
+    inlines = [WorkProfileImagesInline]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('tags')
+
+    def tag_list(self, obj):
+        return u", ".join(o.name for o in obj.tags.all())
+
+
+admin.site.register(WorkProfiles, WorkProfilesAdmin)

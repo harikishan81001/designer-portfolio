@@ -10,7 +10,7 @@ class Themes(BaseModel):
     """
     themes details
     """
-    title = models.CharField(
+    slug = models.CharField(
         max_length=255,
         null=False,
         blank=False, unique=True)
@@ -18,7 +18,9 @@ class Themes(BaseModel):
     name = models.CharField(
         max_length=255,
         null=False, blank=False)
+
     discription = models.TextField()
+    is_enabled = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Themes"
@@ -28,5 +30,4 @@ class Themes(BaseModel):
         string representation of model
         """
         return self.title
-
 
