@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from common.base_admin import BaseModelAdmin
 from workprofile.models import WorkProfiles
 from workprofile.models import WorkProfileImages
 
@@ -8,7 +9,7 @@ class WorkProfileImagesInline(admin.TabularInline):
     extra = 1
 
 
-class WorkProfilesAdmin(admin.ModelAdmin):
+class WorkProfilesAdmin(BaseModelAdmin):
     model = WorkProfiles
     prepopulated_fields = {'slug': ('title',),}
     list_display = (

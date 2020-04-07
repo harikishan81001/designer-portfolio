@@ -13,7 +13,7 @@ class Themes(BaseModel):
     slug = models.CharField(
         max_length=255,
         null=False,
-        blank=False, unique=True)
+        blank=True, unique=True)
 
     name = models.CharField(
         max_length=255,

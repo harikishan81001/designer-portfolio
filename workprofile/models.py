@@ -8,6 +8,18 @@ from common.utilities import get_upload_path
 from common.base_model import BaseModel
 
 
+def upload_preview_image_path(instance, file_name):
+    return get_upload_path(instance, file_name, "preview_image")
+
+
+def upload_project_files_path(instance, file_name):
+    return get_upload_path(instance, file_name, "project_files")
+
+
+def upload_images_path(instance, file_name):
+    return get_upload_path(instance, file_name, "images")
+
+
 class WorkProfiles(BaseModel):
     """
     workprofiles details
@@ -23,21 +35,11 @@ class WorkProfiles(BaseModel):
     discription = models.TextField()
 
     preview_image = models.FileField(
-        upload_to=(
-            lambda instance, file_name: get_upload_path(
-                instance,
-                file_name, "preview_image"
-            )
-        )
+        upload_to=upload_preview_image_path
     )
 
     project_files = models.FileField(
-        upload_to=(
-            lambda instance, file_name: get_upload_path(
-                instance,
-                file_name, "project-files"
-            )
-        )
+        upload_to=upload_project_files_path
     )
 
     draft = models.BooleanField(default=True)
@@ -104,12 +106,5 @@ class WorkProfileImages(models.Model):
         related_name="workprofiles",
         on_delete=models.CASCADE)
     alt = models.CharField(max_length=100, null=False, blank=False)
-    image = models.FileField(
-        upload_to=(
-            lambda instance, file_name: get_upload_path(
-                instance,
-                file_name, "images"
-            )
-        )
-    )
+    image = models.FileField(upload_to=upload_images_path)
     active = models.BooleanField(default=True)

@@ -1,11 +1,13 @@
 from django.contrib import admin
 
+from common.base_admin import BaseModelAdmin
 from themes.models import Themes
 
 
-class ThemesAdmin(admin.ModelAdmin):
+class ThemesAdmin(BaseModelAdmin):
     model = Themes
     prepopulated_fields = {'slug': ('name',),}
+    fields = ("name", "discription", "is_enabled", "slug",)
 
 
 admin.site.register(Themes, ThemesAdmin)
