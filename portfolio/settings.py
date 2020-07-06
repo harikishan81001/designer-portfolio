@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'taggit',
     'workprofile',
     'contacts',
-    'themes'
+    'themes',
+    'common'
 ]
 
 

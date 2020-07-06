@@ -7,7 +7,7 @@ from themes.models import Themes
 class ThemesAdmin(BaseModelAdmin):
     model = Themes
     prepopulated_fields = {'slug': ('name',),}
-    fields = ("name", "discription", "is_enabled", "slug",)
+    fields = ("name", "discription", "user", "is_enabled", "slug",)
 
 
 admin.site.register(Themes, ThemesAdmin)
